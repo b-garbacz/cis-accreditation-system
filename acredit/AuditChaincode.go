@@ -19,17 +19,6 @@ type SmartContract struct {
 }
 
 /*
-	Init Ledger contract
-*/
-func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-	err := ctx.GetStub().PutState("IP", []byte("TOKEN"))
-	if err != nil {
-		return fmt.Errorf("Failed to put to world state. %s", err.Error())
-	}
-	return nil
-}
-
-/*
 	StartAudit Contract takes 2 inputs:
 	1.ip (string)
 	2. username (string)
