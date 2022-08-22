@@ -25,7 +25,7 @@ type SmartContract struct {
 	3. passwrd (string)
 
 	This contract performs a security audit by using Get_version_name().
-	Get_version_name() function connects to the instance via SSH and checks security rules. If the safety tests performed are correct
+	VerifyAllRules() function connects to the instance via SSH and checks security rules. If the safety tests performed are correct
 	then it returns nil, otherwise it returns error if instance is not secured.Error contains name of incorect tested? security rule.
 	If the audit fails then world state is not updated.
 
@@ -34,33 +34,37 @@ type SmartContract struct {
 
 */
 func (s *SmartContract) StartAudit(ctx contractapi.TransactionContextInterface, ip string, username string, passwrd string) error {
-	var errstring string
+	//utworz obiekt struktury device
 	device := audit.Device{Ip: ip, Username: username, Passwrd: passwrd}
-	err := audit.Get_version_name(&device)
+	//przeprowadz audyt bezpieczenstwa
+	err := audit.VerifyAllRules(&device)
 	if err != nil {
 		return err
 	}
-	errstring, err = audit.Check_all_rules(&device)
-	if err != nil {
-		return errors.New(errstring + "! " + err.Error())
-	}
 	var message token.Message
 	var audit_res token.Audit_result
+	//nazwa zestwu regul
 	rule := "Technical-and-Implementation-Directive-on-CIS-Security-2019"
+	//utworz znacznik czasu
 	timestamp, err := ctx.GetStub().GetTxTimestamp()
 	if err != nil {
 		return err
 	}
-	message.Build_message(device.Ip, device.Username, device.Version)
+	//zbuduj obiekt struktury wiadomosci
+	message.Build_message(device.Ip, device.Username)
+	//wygeneruj certyfikat
 	token, err := token.Get_Cert(&message, rule, timestamp.Seconds)
 	if err != nil {
 		return err
 	}
+	// wygeneruj oswiadczenie dowodowe
 	audit_res.Build_Audit_Result(token, &message, rule, timestamp.Seconds)
+	//kodowanie oswiadczenia na bajty w formacie JSON
 	ready_to_ledger, err := json.Marshal(audit_res)
 	if err != nil {
 		return errors.New("JSON Marshal error")
 	}
+	//wyslij propozycje aktualizacji rejestru
 	return ctx.GetStub().PutState(device.Ip, ready_to_ledger)
 }
 

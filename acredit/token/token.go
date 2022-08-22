@@ -17,13 +17,11 @@ type Audit_result struct {
 type Message struct {
 	Ip       string `json:"ip"`
 	Username string `json:"username"`
-	Version  string `json:"version"`
 }
 
-func (m *Message) Build_message(ip string, username string, version string) {
+func (m *Message) Build_message(ip string, username string) {
 	m.Ip = ip
 	m.Username = username
-	m.Version = version
 }
 
 func (ar *Audit_result) Build_Audit_Result(certificate string, mess *Message, set_of_rules string, timestamp int64) {

@@ -1,0 +1,54 @@
+test:
+    name: basic-contract-benchmark
+    description: test benchmark
+    workers:
+      number: 1
+    rounds:
+      - label: StartAudit
+        description: Read asset benchmark
+        txDuration: 3600
+        rateControl:
+          type: fixed-load
+          opts:
+            transactionLoad: 5
+            startingTps: 100
+        workload:
+          module: workload/StartAudit.js
+          arguments:
+            contractId: basic
+      - label: QueryToken
+        description: QueryToken benchmark
+        txDuration: 3600
+        rateControl:
+          type: fixed-load
+          opts:
+            transactionLoad: 5
+            startingTps: 100
+        workload:
+          module: workload/QueryToken.js
+          arguments:
+            contractId: basic
+      - label: QueryTokenHistory
+        description: QueryTokenHistory benchmark
+        txDuration: 3600
+        rateControl:
+          type: fixed-load
+          opts:
+            transactionLoad: 5
+            startingTps: 100
+        workload:
+          module: workload/QueryTokenHistory.js
+          arguments:
+            contractId: basic
+monitors:
+  resource:
+  - module: docker
+    options:
+      interval: 5
+      cpuUsageNormalization: true
+      containers:
+      - all
+      charting:
+        bar:
+          metrics: [Memory(avg), CPU%(avg)]
+

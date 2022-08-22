@@ -1,0 +1,449 @@
+<!doctype html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+    function plotChart(divId, chartData) {
+        // Convert from stringified html, to valid JSON
+        const chartDetails = JSON.parse(chartData.replace(/&quot;/g,'"'));
+        new Chart(document.getElementById(divId), {
+            type: chartDetails.type,
+            data: {
+                labels: chartDetails.labels,
+                datasets: chartDetails.datasets
+            },
+            options: {
+                legend: { display: chartDetails.legend },
+                title: {
+                    display: true,
+                    text: chartDetails.title
+                }
+            }
+        });
+    }
+</script>
+<html>
+<head>
+    <title>Hyperledger Caliper Report</title>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        .left-column {
+            position: fixed;
+            width:20%;
+        }
+        .left-column ul {
+            display: block;
+            padding: 0;
+            list-style: none;
+            border-bottom: 1px solid #d9d9d9;
+            font-size: 14px;
+        }
+        .left-column h2{
+            font-size: 24px;
+            font-weight: 400;
+            margin-block-end: 0.5em;
+        }
+        .left-column h3{
+            font-size: 18px;
+            font-weight: 400;
+            margin-block-end: 0.5em;
+        }
+        .left-column li{
+            margin-left: 10px;
+            margin-bottom: 5px;
+            color: #5e6b73;
+        }
+        .right-column {
+            margin-left: 22%;
+            width:60%;
+        }
+        .right-column table {
+            font-size:11px;
+            color:#333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        .right-column h2{
+            font-weight: 400;
+        }
+        .right-column h3{
+            font-weight: 400;
+        }
+        .right-column h4 {
+            font-weight: 400;
+            margin-block-end: 0;
+        }
+        .right-column th {
+            border-width: 1px;
+            font-size: small;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #f2f2f2;
+        }
+        .right-column td {
+            border-width: 1px;
+            font-size: small;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+            font-weight: 400;
+        }
+        .tag {
+            margin-bottom: 10px;
+            padding: 5px 10px;
+        }
+        pre {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -khtml-border-radius: 5px;
+            overflow:auto;
+            max-height:300px;
+            font-size:12px;
+        }
+        .charting {
+            display:flex;
+            flex-direction:row;
+            flex-wrap: wrap;
+            page-break-inside: auto;
+        }
+        .chart {
+            display:flex;
+            flex:1;
+            max-width: 50%;
+        }
+    </style>
+</head>
+<body style="font-family: IBM Plex Sans; font-weight: 200;">
+    <main>
+        <div class="left-column">
+            <img src="https://hyperledger.github.io/caliper/assets/img/hyperledger_caliper_logo_color.png" style="width:95%;" alt="">
+            <ul>
+                <h3>&nbspBasic information</h3>
+                <li>DLT: &nbsp<span style="font-weight: 500;">fabric</span></li>
+                <li>Name: &nbsp<span style="font-weight: 500;">basic-contract-benchmark</span></li>
+                <li>Description: &nbsp<span style="font-weight: 500;">test benchmark</span></li>
+                <li>Benchmark Rounds: &nbsp<span style="font-weight: 500;">3</span></li>
+                <li><a href="#benchmarkInfo">Details</a></li>
+            </ul>
+            <ul>
+                <h3>&nbspBenchmark results</h3>
+                <li><a href="#benchmarksummary">Summary</a></li>
+                    <li><a href="#StartAudit">StartAudit</a></li>
+                    <li><a href="#QueryToken">QueryToken</a></li>
+                    <li><a href="#QueryTokenHistory">QueryTokenHistory</a></li>
+            </ul>
+            <ul>
+                <h3>&nbspSystem under test</h3>
+                <li><a href="#sutdetails">Details</a></li>
+            </ul>
+        </div>
+
+        <div class="right-column">
+            <h1 style="padding-top: 3em; font-weight: 500;">Caliper report</h1>
+            <div style="border-bottom: 1px solid #d9d9d9; margin-bottom: 10px;" id="benchmarksummary">
+                <table style="min-width: 100%;">
+                    <h3>Summary of performance metrics</h3>
+                    <tr>
+                         <th>Name</th> <th>Succ</th> <th>Fail</th> <th>Send Rate (TPS)</th> <th>Max Latency (s)</th> <th>Min Latency (s)</th> <th>Avg Latency (s)</th> <th>Throughput (TPS)</th>
+                    </tr>
+
+                    <tr>
+                         <td>StartAudit</td> <td>4194</td> <td>0</td> <td>1.2</td> <td>6.55</td> <td>3.45</td> <td>4.29</td> <td>1.2</td>
+                    </tr>
+                    <tr>
+                         <td>QueryToken</td> <td>3624</td> <td>0</td> <td>1.0</td> <td>12.71</td> <td>2.23</td> <td>3.89</td> <td>1.0</td>
+                    </tr>
+                    <tr>
+                         <td>QueryTokenHistory</td> <td>941938</td> <td>0</td> <td>261.7</td> <td>0.08</td> <td>0.01</td> <td>0.01</td> <td>261.7</td>
+                    </tr>
+                </table>
+            </div>
+            <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;" id="StartAudit">
+                <h2>Benchmark round: StartAudit</h2>
+                <p>Read asset benchmark</p>
+                <pre style="overflow: visible;white-space: pre-wrap;max-height:100%;">txDuration: 3600
+rateControl:
+  type: fixed-load
+  opts:
+    transactionLoad: 5
+    startingTps: 100
+</pre>
+                        <h3>Performance metrics for StartAudit</h3>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                     <th>Name</th> <th>Succ</th> <th>Fail</th> <th>Send Rate (TPS)</th> <th>Max Latency (s)</th> <th>Min Latency (s)</th> <th>Avg Latency (s)</th> <th>Throughput (TPS)</th>
+                                </tr>
+                                <tr>
+                                     <td>StartAudit</td> <td>4194</td> <td>0</td> <td>1.2</td> <td>6.55</td> <td>3.45</td> <td>4.29</td> <td>1.2</td>
+                                </tr>
+                            </table>
+                        <h3>Resource utilization for StartAudit</h3>
+                            <h4>Resource monitor: docker</h4>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                <table>
+                                    <tr>
+                                         <th>Name</th> <th>CPU%(max)</th> <th>CPU%(avg)</th> <th>Memory(max) [MB]</th> <th>Memory(avg) [MB]</th> <th>Traffic In [MB]</th> <th>Traffic Out [MB]</th> <th>Disc Write [MB]</th> <th>Disc Read [KB]</th>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>5.0925</td> <td>1.0825</td> <td>21.3</td> <td>20.4</td> <td>63.1</td> <td>49.2</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>5.045</td> <td>1.1275</td> <td>10.5</td> <td>9.61</td> <td>63.1</td> <td>49.1</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;cli</td> <td>0</td> <td>0</td> <td>0.973</td> <td>0.973</td> <td>0.000495</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org1.example.com</td> <td>3.62</td> <td>1.4625</td> <td>164</td> <td>153</td> <td>77.5</td> <td>68.7</td> <td>34.0</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org2.example.com</td> <td>2.73</td> <td>1.2375</td> <td>94.8</td> <td>90.9</td> <td>39.8</td> <td>23.9</td> <td>34.0</td> <td>12.0</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb0</td> <td>6.9875</td> <td>1.13</td> <td>74.8</td> <td>70.0</td> <td>1.20</td> <td>1.01</td> <td>77.3</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;orderer.example.com</td> <td>0.96</td> <td>0.1775</td> <td>109</td> <td>85.2</td> <td>23.4</td> <td>45.3</td> <td>50.8</td> <td>4.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb1</td> <td>6.175</td> <td>1.1125</td> <td>74.2</td> <td>69.0</td> <td>1.20</td> <td>1.01</td> <td>77.3</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org1</td> <td>0</td> <td>0</td> <td>6.86</td> <td>6.85</td> <td>0.000495</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_orderer</td> <td>0.155</td> <td>0</td> <td>6.98</td> <td>6.98</td> <td>0.000495</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org2</td> <td>0.215</td> <td>0.0025</td> <td>7.01</td> <td>7.01</td> <td>0.000495</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                </table>
+                                </tr>
+                            </table>
+                            <div class="charting">
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_StartAudit_horizontalBar0">
+                                        <script>plotChart("MonitorDocker_StartAudit_horizontalBar0", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;CPU%(avg)&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[1.0825,1.1275,0,1.4625,1.2375,1.13,0.1775,1.1125,0,0,0.0025]}]}")</script>
+                                    </canvas>
+                                </div>
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_StartAudit_horizontalBar1">
+                                        <script>plotChart("MonitorDocker_StartAudit_horizontalBar1", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;Memory(avg) [MB]&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[&quot;20.4&quot;,&quot;9.61&quot;,&quot;0.973&quot;,&quot;153&quot;,&quot;90.9&quot;,&quot;70.0&quot;,&quot;85.2&quot;,&quot;69.0&quot;,&quot;6.85&quot;,&quot;6.98&quot;,&quot;7.01&quot;]}]}")</script>
+                                    </canvas>
+                                </div>
+                            </div>
+            </div>
+
+            <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;" id="QueryToken">
+                <h2>Benchmark round: QueryToken</h2>
+                <p>QueryToken benchmark</p>
+                <pre style="overflow: visible;white-space: pre-wrap;max-height:100%;">txDuration: 3600
+rateControl:
+  type: fixed-load
+  opts:
+    transactionLoad: 5
+    startingTps: 100
+</pre>
+                        <h3>Performance metrics for QueryToken</h3>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                     <th>Name</th> <th>Succ</th> <th>Fail</th> <th>Send Rate (TPS)</th> <th>Max Latency (s)</th> <th>Min Latency (s)</th> <th>Avg Latency (s)</th> <th>Throughput (TPS)</th>
+                                </tr>
+                                <tr>
+                                     <td>QueryToken</td> <td>3624</td> <td>0</td> <td>1.0</td> <td>12.71</td> <td>2.23</td> <td>3.89</td> <td>1.0</td>
+                                </tr>
+                            </table>
+                        <h3>Resource utilization for QueryToken</h3>
+                            <h4>Resource monitor: docker</h4>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                <table>
+                                    <tr>
+                                         <th>Name</th> <th>CPU%(max)</th> <th>CPU%(avg)</th> <th>Memory(max) [MB]</th> <th>Memory(avg) [MB]</th> <th>Traffic In [GB]</th> <th>Traffic Out [GB]</th> <th>Disc Write [B]</th> <th>Disc Read [B]</th>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>56.0425</td> <td>17.82</td> <td>507</td> <td>226</td> <td>18.9</td> <td>18.8</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>0</td> <td>0</td> <td>9.36</td> <td>7.90</td> <td>0.0000377</td> <td>0.0000400</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;cli</td> <td>0</td> <td>0</td> <td>0.973</td> <td>0.973</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org1.example.com</td> <td>71.045</td> <td>37.17</td> <td>737</td> <td>559</td> <td>18.9</td> <td>37.5</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org2.example.com</td> <td>1.1525</td> <td>0.77</td> <td>94.4</td> <td>62.1</td> <td>0.00345</td> <td>0.00340</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb0</td> <td>2.3425</td> <td>0.5275</td> <td>73.0</td> <td>69.3</td> <td>7.09e-7</td> <td>3.02e-7</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;orderer.example.com</td> <td>0.5625</td> <td>0.035</td> <td>93.1</td> <td>83.9</td> <td>0.000109</td> <td>0.0000982</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb1</td> <td>2.37</td> <td>0.63</td> <td>68.6</td> <td>67.3</td> <td>7.87e-7</td> <td>3.80e-7</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org1</td> <td>0</td> <td>0</td> <td>6.85</td> <td>6.85</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_orderer</td> <td>0</td> <td>0</td> <td>6.98</td> <td>6.98</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org2</td> <td>0</td> <td>0</td> <td>7.01</td> <td>7.01</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                </table>
+                                </tr>
+                            </table>
+                            <div class="charting">
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_QueryToken_horizontalBar0">
+                                        <script>plotChart("MonitorDocker_QueryToken_horizontalBar0", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;CPU%(avg)&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[17.82,0,0,37.17,0.77,0.5275,0.035,0.63,0,0,0]}]}")</script>
+                                    </canvas>
+                                </div>
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_QueryToken_horizontalBar1">
+                                        <script>plotChart("MonitorDocker_QueryToken_horizontalBar1", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;Memory(avg) [MB]&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[&quot;226&quot;,&quot;7.90&quot;,&quot;0.973&quot;,&quot;559&quot;,&quot;62.1&quot;,&quot;69.3&quot;,&quot;83.9&quot;,&quot;67.3&quot;,&quot;6.85&quot;,&quot;6.98&quot;,&quot;7.01&quot;]}]}")</script>
+                                    </canvas>
+                                </div>
+                            </div>
+            </div>
+
+            <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;" id="QueryTokenHistory">
+                <h2>Benchmark round: QueryTokenHistory</h2>
+                <p>QueryTokenHistory benchmark</p>
+                <pre style="overflow: visible;white-space: pre-wrap;max-height:100%;">txDuration: 3600
+rateControl:
+  type: fixed-load
+  opts:
+    transactionLoad: 5
+    startingTps: 100
+</pre>
+                        <h3>Performance metrics for QueryTokenHistory</h3>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                     <th>Name</th> <th>Succ</th> <th>Fail</th> <th>Send Rate (TPS)</th> <th>Max Latency (s)</th> <th>Min Latency (s)</th> <th>Avg Latency (s)</th> <th>Throughput (TPS)</th>
+                                </tr>
+                                <tr>
+                                     <td>QueryTokenHistory</td> <td>941938</td> <td>0</td> <td>261.7</td> <td>0.08</td> <td>0.01</td> <td>0.01</td> <td>261.7</td>
+                                </tr>
+                            </table>
+                        <h3>Resource utilization for QueryTokenHistory</h3>
+                            <h4>Resource monitor: docker</h4>
+                            <table style="min-width: 100%;">
+                                <tr>
+                                <table>
+                                    <tr>
+                                         <th>Name</th> <th>CPU%(max)</th> <th>CPU%(avg)</th> <th>Memory(max) [MB]</th> <th>Memory(avg) [MB]</th> <th>Traffic In [GB]</th> <th>Traffic Out [GB]</th> <th>Disc Write [B]</th> <th>Disc Read [KB]</th>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>16.9425</td> <td>14.4825</td> <td>120</td> <td>32.3</td> <td>2.10</td> <td>1.02</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25</td> <td>0.31</td> <td>0.0025</td> <td>7.82</td> <td>7.82</td> <td>0.0000373</td> <td>0.0000398</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;cli</td> <td>0</td> <td>0</td> <td>0.973</td> <td>0.973</td> <td>2.80e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org1.example.com</td> <td>32.8475</td> <td>25.97</td> <td>484</td> <td>481</td> <td>2.45</td> <td>2.71</td> <td>0.00</td> <td>4.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;peer0.org2.example.com</td> <td>1.5675</td> <td>0.7725</td> <td>60.5</td> <td>60.5</td> <td>0.00351</td> <td>0.00354</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb0</td> <td>2.4825</td> <td>0.565</td> <td>69.2</td> <td>69.2</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;orderer.example.com</td> <td>0.3725</td> <td>0.0275</td> <td>83.6</td> <td>83.5</td> <td>0.000109</td> <td>0.0000980</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;couchdb1</td> <td>2.4</td> <td>0.605</td> <td>67.2</td> <td>67.2</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org1</td> <td>0.3225</td> <td>0.005</td> <td>6.86</td> <td>6.85</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_orderer</td> <td>0.2175</td> <td>0.005</td> <td>6.98</td> <td>6.98</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                         <td>&#x2F;ca_org2</td> <td>0.1775</td> <td>0.0025</td> <td>7.04</td> <td>7.00</td> <td>3.46e-7</td> <td>0.00</td> <td>0.00</td> <td>0.00</td>
+                                    </tr>
+                                </table>
+                                </tr>
+                            </table>
+                            <div class="charting">
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_QueryTokenHistory_horizontalBar0">
+                                        <script>plotChart("MonitorDocker_QueryTokenHistory_horizontalBar0", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;CPU%(avg)&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[14.4825,0.0025,0,25.97,0.7725,0.565,0.0275,0.605,0.005,0.005,0.0025]}]}")</script>
+                                    </canvas>
+                                </div>
+                                <div class="chart">
+                                    <canvas id="MonitorDocker_QueryTokenHistory_horizontalBar1">
+                                        <script>plotChart("MonitorDocker_QueryTokenHistory_horizontalBar1", "{&quot;type&quot;:&quot;horizontalBar&quot;,&quot;title&quot;:&quot;Memory(avg) [MB]&quot;,&quot;legend&quot;:false,&quot;labels&quot;:[&quot;&#x2F;dev-peer0.org1.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;dev-peer0.org2.example.com-basic_1.0-85cf5f08e403d1649e78072acd7742c17a2f5c38825a43840132b91a147faa25&quot;,&quot;&#x2F;cli&quot;,&quot;&#x2F;peer0.org1.example.com&quot;,&quot;&#x2F;peer0.org2.example.com&quot;,&quot;&#x2F;couchdb0&quot;,&quot;&#x2F;orderer.example.com&quot;,&quot;&#x2F;couchdb1&quot;,&quot;&#x2F;ca_org1&quot;,&quot;&#x2F;ca_orderer&quot;,&quot;&#x2F;ca_org2&quot;],&quot;datasets&quot;:[{&quot;backgroundColor&quot;:[&quot;rgb(255,71,0,0.6)&quot;,&quot;rgb(179,50,0,0.6)&quot;,&quot;rgb(255,209,191,0.6)&quot;,&quot;rgb(255,163,128,0.6)&quot;,&quot;rgb(31,235,0,0.6)&quot;,&quot;rgb(22,164,0,0.6)&quot;,&quot;rgb(200,255,191,0.6)&quot;,&quot;rgb(144,255,128,0.6)&quot;,&quot;rgb(0,82,189,0.6)&quot;,&quot;rgb(0,58,132,0.6)&quot;,&quot;rgb(191,219,255,0.6)&quot;],&quot;data&quot;:[&quot;32.3&quot;,&quot;7.82&quot;,&quot;0.973&quot;,&quot;481&quot;,&quot;60.5&quot;,&quot;69.2&quot;,&quot;83.5&quot;,&quot;67.2&quot;,&quot;6.85&quot;,&quot;6.98&quot;,&quot;7.00&quot;]}]}")</script>
+                                    </canvas>
+                                </div>
+                            </div>
+            </div>
+
+            <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;">
+                <h2>Test Environment</h2>
+                <h3>benchmark config</h3>
+                <pre id="benchmarkInfo" style="overflow: visible;white-space: pre-wrap;max-height:100%;">name: basic-contract-benchmark
+description: test benchmark
+workers:
+  number: 1
+rounds:
+  - label: StartAudit
+    description: Read asset benchmark
+    txDuration: 3600
+    rateControl:
+      type: fixed-load
+      opts:
+        transactionLoad: 5
+        startingTps: 100
+    workload:
+      module: workload&#x2F;StartAudit.js
+      arguments:
+        contractId: basic
+  - label: QueryToken
+    description: QueryToken benchmark
+    txDuration: 3600
+    rateControl:
+      type: fixed-load
+      opts:
+        transactionLoad: 5
+        startingTps: 100
+    workload:
+      module: workload&#x2F;QueryToken.js
+      arguments:
+        contractId: basic
+  - label: QueryTokenHistory
+    description: QueryTokenHistory benchmark
+    txDuration: 3600
+    rateControl:
+      type: fixed-load
+      opts:
+        transactionLoad: 5
+        startingTps: 100
+    workload:
+      module: workload&#x2F;QueryTokenHistory.js
+      arguments:
+        contractId: basic
+</pre>
+                <h3>SUT</h3>
+                <pre id="sutdetails">not provided</pre>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
