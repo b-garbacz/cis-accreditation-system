@@ -24,9 +24,9 @@ type SmartContract struct {
 	2. username (string)
 	3. passwrd (string)
 
-	This contract performs a security audit by using Get_version_name().
+	This contract performs a security audit by using VerifyAllRules().
 	VerifyAllRules() function connects to the instance via SSH and checks security rules. If the safety tests performed are correct
-	then it returns nil, otherwise it returns error if instance is not secured.Error contains name of incorect tested? security rule.
+	then it returns nil, otherwise it returns error if instance is not secured.Error contains name of incorect security rule.
 	If the audit fails then world state is not updated.
 
 	If the security audit is correct then generate token(without digital signature) and put it to the state {Key:ip , Value:ready_to_ledger} where ready_to_ledger is a generated token
@@ -34,7 +34,7 @@ type SmartContract struct {
 
 */
 func (s *SmartContract) StartAudit(ctx contractapi.TransactionContextInterface, ip string, username string, passwrd string) error {
-	//utworz obiekt struktury device
+	//create device structure object
 	device := audit.Device{Ip: ip, Username: username, Passwrd: passwrd}
 	//przeprowadz audyt bezpieczenstwa
 	err := audit.VerifyAllRules(&device)
@@ -43,28 +43,28 @@ func (s *SmartContract) StartAudit(ctx contractapi.TransactionContextInterface, 
 	}
 	var message token.Message
 	var audit_res token.Audit_result
-	//nazwa zestwu regul
+	// The rule set name
 	rule := "Technical-and-Implementation-Directive-on-CIS-Security-2019"
-	//utworz znacznik czasu
+	//Create the timestamp
 	timestamp, err := ctx.GetStub().GetTxTimestamp()
 	if err != nil {
 		return err
 	}
-	//zbuduj obiekt struktury wiadomosci
+	//Build Message structure object
 	message.Build_message(device.Ip, device.Username)
-	//wygeneruj certyfikat
+	//Generate certificate
 	token, err := token.Get_Cert(&message, rule, timestamp.Seconds)
 	if err != nil {
 		return err
 	}
-	// wygeneruj oswiadczenie dowodowe
+	//Build evidence statement as Token
 	audit_res.Build_Audit_Result(token, &message, rule, timestamp.Seconds)
 	//kodowanie oswiadczenia na bajty w formacie JSON
 	ready_to_ledger, err := json.Marshal(audit_res)
 	if err != nil {
 		return errors.New("JSON Marshal error")
 	}
-	//wyslij propozycje aktualizacji rejestru
+	//send registry update suggestions
 	return ctx.GetStub().PutState(device.Ip, ready_to_ledger)
 }
 
